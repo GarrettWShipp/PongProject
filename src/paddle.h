@@ -5,7 +5,6 @@
 
 typedef struct {
     int var;
-    bool leftPlayer;
 } Paddle;
 
 void PaddleStart(AppContext* _app, Entity* _entity) {
@@ -15,41 +14,7 @@ void PaddleStart(AppContext* _app, Entity* _entity) {
 }
 
 void PaddleUpdate(AppContext* _app, Entity* _entity) {
-    const bool* keys = SDL_GetKeyboardState(NULL);
-    Vector2 direction = (Vector2){0.0f, 1.0f};
-    float speed = 150.0f;
 
-    if(_entity->leftPlayer){
-        if(keys[SDL_SCANCODE_W]){
-            _entity->velocity = Vec2Mul(direction, speed);
-        }
-        else if(keys[SDL_SCANCODE_S]){
-            _entity->velocity = Vec2Mul(direction, speed * -1);
-        }
-        else{
-            _entity->velocity = Vec2Mul((Vector2){0.0f, 0.0f}, 0.0f);
-        }
-    }
-    else{
-        if(keys[SDL_SCANCODE_UP]){
-            _entity->velocity = Vec2Mul(direction, speed);
-        }
-        else if(keys[SDL_SCANCODE_DOWN]){
-            _entity->velocity = Vec2Mul(direction, speed * -1);
-        }
-        else{
-            _entity->velocity = Vec2Mul((Vector2){0.0f, 0.0f}, 0.0f);
-        }
-    }
-
-    if (_entity->transform.position.y - _entity->transform.scale.y * 0.5f <= 0.0f && _entity->velocity.y < 0.0f)
-        _entity->velocity.y = 0.0f; 
-    
-    if (_entity->transform.position.y + _entity->transform.scale.y * 0.5f >= _app->windowHeight && _entity->velocity.y > 0.0f)
-        _entity->velocity.y = 0.0f; 
-
-    Vector3 delta = Vec2ToVec3(Vec2Mul(_entity->velocity, _app->deltaTime));
-    _entity->transform.position = Vec3Add(_entity->transform.position, delta);
 }
 
 void PaddleDraw(AppContext* _app, Entity* _entity) {

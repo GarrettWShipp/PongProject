@@ -31,5 +31,4 @@ struct Entity {
     void (*Update)(AppContext*, Entity*);
     void (*Draw)(AppContext*, Entity*);
     void (*OnDestroy)(AppContext*, Entity*);
-    bool leftPlayer;
 };
