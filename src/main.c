@@ -94,6 +94,7 @@ int main(int argc, char *argv[])
     leftPaddle->Update = PaddleUpdate;
     leftPaddle->Draw = PaddleDraw;
     leftPaddle->OnDestroy = PaddleOnDestroy;
+    leftPaddle->leftPlayer = true;
 
     Entity* rightPaddle = Spawn(&scene);
     rightPaddle->transform.position = InitVector3(app.windowWidth - 16.0f, app.windowHeight * 0.5f, 0.0f);
@@ -105,6 +106,7 @@ int main(int argc, char *argv[])
     rightPaddle->Update = PaddleUpdate;
     rightPaddle->Draw = PaddleDraw;
     rightPaddle->OnDestroy = PaddleOnDestroy;
+    rightPaddle->leftPlayer = false;
     
     bool running = true;
     f32 time = 0.0f;
