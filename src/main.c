@@ -83,6 +83,8 @@ int main(int argc, char *argv[])
     ball->Update = BallUpdate;
     ball->Draw = BallDraw;
     ball->OnDestroy = BallOnDestroy;
+    ball->name = "ball";
+    
 
     Entity* leftPaddle = Spawn(&scene);
     leftPaddle->transform.position = InitVector3(16.0f, app.windowHeight * 0.5f, 0.0f);
@@ -94,6 +96,7 @@ int main(int argc, char *argv[])
     leftPaddle->Update = PaddleUpdate;
     leftPaddle->Draw = PaddleDraw;
     leftPaddle->OnDestroy = PaddleOnDestroy;
+    leftPaddle->name = "leftPaddle";
     leftPaddle->leftPlayer = true;
 
     Entity* rightPaddle = Spawn(&scene);
@@ -106,6 +109,7 @@ int main(int argc, char *argv[])
     rightPaddle->Update = PaddleUpdate;
     rightPaddle->Draw = PaddleDraw;
     rightPaddle->OnDestroy = PaddleOnDestroy;
+    rightPaddle->name = "rightPaddle";
     rightPaddle->leftPlayer = false;
     
     bool running = true;

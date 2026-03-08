@@ -16,7 +16,7 @@ void PaddleStart(AppContext* _app, Entity* _entity) {
 void PaddleUpdate(AppContext* _app, Entity* _entity) {
     const bool* keys = SDL_GetKeyboardState(NULL);
     Vector2 direction = (Vector2){0.0f, 1.0f};
-    float speed = 150.0f;
+    float speed = 500.0f;
 
     if(_entity->leftPlayer){
         if(keys[SDL_SCANCODE_W]){
