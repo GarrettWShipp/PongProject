@@ -22,7 +22,7 @@ void ScoreBallStart(AppContext* _app, Entity* _entity) {
         _entity->transform.position = InitVector3(0.0f + scoreBall->score * _entity->transform.scale.x, _app->windowHeight - _entity->transform.scale.y * 0.5f, 0.0f);
     }
     if(!_entity->leftPlayer){
-        _entity->transform.position = InitVector3(_app->windowWidth - scoreBall->score * _entity->transform.scale.x * 2.0f, _app->windowHeight - _entity->transform.scale.y, 0.0f);
+        _entity->transform.position = InitVector3(_app->windowWidth - scoreBall->score * _entity->transform.scale.x, _app->windowHeight - _entity->transform.scale.y, 0.0f);
     }
 
 }

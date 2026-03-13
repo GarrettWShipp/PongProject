@@ -64,7 +64,11 @@ void PaddleDraw(AppContext* _app, Entity* _entity) {
     ShaderSetMatrix4(_entity->shaderId, "VIEW", _app->view);
     ShaderSetMatrix4(_entity->shaderId, "PROJECTION", _app->projection);
 
-    ShaderSetVector4(_entity->shaderId, "COLOR", _entity->color);
+    if(_entity->leftPlayer)
+        ShaderSetVector4(_entity->shaderId, "COLOR", (Vector4){0,0,1,0.75f});
+    else
+        ShaderSetVector4(_entity->shaderId, "COLOR", (Vector4){1,0,0,0.75f});
+    
     ShaderBindTexture(_entity->shaderId, _entity->image->id, "MAIN_TEXTURE", 0);
     ShaderSetMatrix4(_entity->shaderId, "TRANSFORM", transform);
     DrawModel(*_entity->model);

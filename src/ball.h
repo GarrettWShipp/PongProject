@@ -4,20 +4,24 @@
 #include "cpup/model.h"
 #include "cpup/inputmanager.h"
 #include "scoreBall.h"
+#include "ballTrail.h"
+#include "ballEffect.h"
 
 #include <SDL3/SDL.h>
 
 typedef struct {
     int leftScore;
     int rightScore;
+    float timer;
+    int winningScore;
 } Ball;
 
 Entity* SpawnBall(AppContext* _app, Entity* _entity);
 void ResetBall(AppContext* _app, Entity* _entity);
 int GetScore(Entity* _ball, bool _leftplayer);
+void Winner(AppContext* _app, Entity* _entity, bool _leftPlayer);
 
 void BallStart(AppContext* _app, Entity* _entity) {
-    _entity->color = InitVector4(1.0f, 1.0f, 1.0f, 1.0f);
 
     _entity->transform.scale = InitVector3(32.0f, 32.0f, 1.0f);
 
@@ -25,8 +29,17 @@ void BallStart(AppContext* _app, Entity* _entity) {
 
 void BallUpdate(AppContext* _app, Entity* _entity) {
     Ball* ball = (Ball*)_entity->data;
+    ball->winningScore = 5;
     Transform leftPaddle = Find(&_app->scene, "leftPaddle")->transform;
     Transform rightPaddle = Find(&_app->scene, "rightPaddle")->transform;
+    if(_entity->velocity.x > 0){
+        _entity->color = (Vector4){0,0,1,0.75f};
+        SpawnBallTrail(_app, _entity, _entity->transform.position, (Vector4){0,0,1,0.75f});
+    }
+    else{
+        _entity->color = (Vector4){1,0,0,0.75f};
+        SpawnBallTrail(_app, _entity, _entity->transform.position, (Vector4){1,0,0,0.75f});
+    }
 
     if (GetKeyDown(_app, SDL_SCANCODE_P))
     {
@@ -58,18 +71,32 @@ void BallUpdate(AppContext* _app, Entity* _entity) {
     if (_entity->transform.position.x + _entity->transform.scale.x * 0.5f >= _app->windowWidth){
         ball->leftScore++;
         SpawnScoreBall(_app, _entity, true, ball->leftScore);
+        
         ResetBall(_app, _entity);
     }
-        
-
-
     if (_entity->transform.position.x - _entity->transform.scale.x * 0.5f <= 0.0f ){
         ball->rightScore++;
         SpawnScoreBall(_app, _entity, false, ball->rightScore);
+        
         ResetBall(_app, _entity);
     }
-
-
+    
+    if(ball->rightScore == ball->winningScore){
+        _entity->velocity = (Vector2){0.0f};
+        ball->timer = ball->timer - _app->deltaTime;
+        if(ball->timer <= 0){
+            Winner(_app, _entity, false);
+            ball->timer = 0.25f;
+        }
+    }
+    if(ball->leftScore == ball->winningScore){
+        _entity->velocity = (Vector2){0.0f};
+        ball->timer = ball->timer - _app->deltaTime;
+        if(ball->timer <= 0){
+            Winner(_app, _entity, true);
+            ball->timer = 0.25f;
+        }
+     }
     if(_entity->transform.position.x - _entity->transform.scale.x * 0.5f <= leftPaddle.position.x + leftPaddle.scale.x * 0.5f
         && _entity->transform.position.y - _entity->transform.scale.y * 0.5f <= leftPaddle.position.y + leftPaddle.scale.y * 0.5f
         && _entity->transform.position.y + _entity->transform.scale.y * 0.5f >= leftPaddle.position.y - leftPaddle.scale.y * 0.5f 
@@ -138,10 +165,16 @@ void ResetBall(AppContext* _app, Entity* _entity){
 }
 int GetScore(Entity* _ball, bool _leftplayer){
     Ball* ball = (Ball*)_ball->data;
-    int score = 0;
     if(_leftplayer){
         return ball->leftScore;
     }
     return ball->rightScore;
 
+}
+
+void Winner(AppContext* _app, Entity* _entity, bool _leftPlayer){
+        for(int x = 0; x < _app->windowWidth; x += (_entity->transform.scale.x)){
+        SpawnBallEffect(_app, _entity, (Vector3){x, _app->windowHeight - 5, 0.0f}, _leftPlayer);
+    }
+    
 }

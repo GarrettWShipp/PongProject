@@ -25,6 +25,7 @@
 
 #include "ball.h"
 #include "paddle.h"
+#include "grid.h"
 
 AppContext app;
 
@@ -48,9 +49,12 @@ int main(int argc, char *argv[])
     Image containerImage = IOLoadImage("assets/textures/container.tga");
     Image circleImage = IOLoadImage("assets/textures/circle.tga");
     Image squareImage = IOLoadImage("assets/textures/square.tga");
+    Image gridImage = IOLoadImage("assets/textures/grid.tga");
+    Image noiseImage = IOLoadImage("assets/textures/noise.tga");
     
     // build and compile our shader program
     u32 shaderProgram = GenerateShaderFromFiles("assets/shaders/logo.vs", "assets/shaders/logo.fs");
+    u32 gridShaderProgram = GenerateShaderFromFiles("assets/shaders/grid.vs", "assets/shaders/grid.fs");
     printf("shaderID: %i\n", shaderProgram);
 
     float ve[] = {
@@ -72,6 +76,19 @@ int main(int argc, char *argv[])
     vec_append(&indices, in, 6);
     
     Model model = BuildModel(&vertices, &indices, STATIC_DRAW);
+
+    Entity* grid = Spawn(&(scene));
+    grid->name = "grid";
+    grid->data = calloc(1, sizeof(Grid));
+    Grid* gridData = (Grid*)grid->data;
+    gridData->noise = &noiseImage;
+    grid->transform.position = InitVector3(app.windowWidth * 0.5f, app.windowHeight * 0.5f, -1.0f);
+    grid->transform.scale = InitVector3(app.windowWidth, app.windowHeight, 1.0f);
+    grid->color = InitVector4(1.0f, 1.0f, 1.0f, 1.0f);
+    grid->image = &gridImage;
+    grid->model = &model;
+    grid->shaderId = gridShaderProgram;
+    grid->Draw = GridDraw;
 
     Entity* ball = Spawn(&scene);
     ball->transform.position = InitVector3(app.windowWidth * 0.5f, app.windowHeight * 0.5f, 0.0f);
@@ -153,6 +170,7 @@ int main(int argc, char *argv[])
     free(containerImage.data);
     free(circleImage.data);
     free(squareImage.data);
+    free(gridImage.data);
 
     SceneFree(&scene);
 

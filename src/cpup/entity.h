@@ -33,3 +33,8 @@ struct Entity {
     void (*OnDestroy)(AppContext*, Entity*);
     bool leftPlayer;
 };
+
+#define ENTITY_DATA(Type, varName, entity)  \
+    Type* varName = (Type*)entity->data;    \
+    if (varName == NULL)                    \
+        return;
